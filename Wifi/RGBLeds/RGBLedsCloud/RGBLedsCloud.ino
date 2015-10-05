@@ -6,13 +6,17 @@
 #define SIKWI_USER "XXXX"
 #define SIKWI_PASS "XXXX"
 
-#define SIKWI_NAME "Bistable"
+#define RED 5
+#define GREEN 3
+#define BLUE 6
+
+#define SIKWI_NAME "LedDimmer"
 
 SikwiWifiOne wifi;
 SikwiWifiAccessPointConfiguration accessPoint(&wifi);
 SikwiWifiCloud server(&wifi);
 
-uint8_t ledStatus = 0;
+String hexstring = "00FF00";
 
 void resetWifi(){
   wifi.reset(9600, &Serial);
@@ -23,8 +27,9 @@ void resetWifi(){
     return resetWifi();//Error while creating AccessPoint, or join new wifi,...
   
   server.connect(PSTR(SIKWI_USER), PSTR(SIKWI_PASS), serverDataHandler);
+
+  hexstring = wifi.getData(PSTR("clrHEX"));
   
-  ledStatus = wifi.getData(PSTR("switch")).toInt();
   updateObject();
 
   Serial.println("Init");
@@ -34,11 +39,9 @@ void setup()
 {
   pinMode(A0, OUTPUT);
   
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
-  
-  digitalWrite(4,LOW);
-  digitalWrite(5,LOW);
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE, OUTPUT);
   
   Serial.begin(115200);  
 
@@ -46,7 +49,7 @@ void setup()
 }
 
 void loop()
-{ 
+{
   if(!wifi.process()){
     Serial.println("mustReset");
     resetWifi();
@@ -57,9 +60,8 @@ void loop()
 
 void serverDataHandler(String type, String value)
 {
-  if(type == "switch")
-  {
-    ledStatus = value.toInt();
+  if(type == "clrHEX"){
+    hexstring = value;
     
     Serial.print("type:");
     Serial.println(type);
@@ -73,16 +75,15 @@ void serverDataHandler(String type, String value)
 
 void updateObject()
 {
-  digitalWrite(A0, ledStatus);
-  if(ledStatus){
-    digitalWrite(4, HIGH);
-    delay(10);
-    digitalWrite(4, LOW);
-  }else{
-    digitalWrite(5, HIGH);
-    delay(10);
-    digitalWrite(5, LOW);
-  }
-    
-  wifi.setData(PSTR("switch"), ledStatus);
+  unsigned long number = (unsigned long) strtol( &hexstring[1], NULL, 16);
+  int r = number >> 16;
+  int g = number >> 8 & 0xFF;
+  int b = number & 0xFF;
+  digitalWrite(A0, r);
+  
+  analogWrite(RED, r);
+  analogWrite(GREEN, g);
+  analogWrite(BLUE, b);
+
+  wifi.setData(PSTR("clrHEX"), hexstring);
 }
