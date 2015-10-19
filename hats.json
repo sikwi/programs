@@ -1,0 +1,38 @@
+{
+	"hats":{
+		"Mini":[
+			{"name":"Détection de mouvement", "id":"eye"},
+			{"name":"Ouverture de porte", "id":"door"},
+			{"name":"Clavier d'accès", "id":"keypad"},
+			{"name":"Boutons", "id":"dualButtons"},
+			{"name":"Autres", "id":"other"}
+		],
+		"One":[
+			{"name":"Variateur 220V", "id":"dimmerAC"},
+			{"name":"Gateway Série", "id":"GWSerial"},
+			{"name":"Relai infra-rouge", "id":"rIR"},
+			{"name":"Matrice leds 8x8", "id":"matrice8x8"},
+			{"name":"Bandeau de Leds RGB", "id":"ledRGB"},
+			{"name":"Relai 433Kz", "id":"r433"},
+			{"name":"Relay Simple", "id":"relay"},
+			{"name":"Relay Bistable", "id":"relayBiStable"},
+			{"name":"TéléInfo", "id":"teleinfo"},
+			{"name":"Autres", "id":"other"}
+		]
+	},
+	"programs":{
+		"Radio":{
+			"Mini":{},
+			"One":{}
+		},
+		"Wifi":{
+			"Mini":{},
+			"One":{
+				"dimmerAC":[]
+			}
+		},
+		"Arduino":{},
+		"USB":{},
+		"Others":{}
+	}
+}
